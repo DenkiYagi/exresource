@@ -1,0 +1,11 @@
+{
+    "name": "exresource",
+    "description": "",
+    "url": "https://github.com/DenkiYagi/haxe-exresource",
+    "license": "Apache",
+    "version": "0.0.1",
+    "releasenote": "First release",
+    "contributors": ["DenkiYagi"],
+    "classPath": "src",
+    "dependencies": {}
+}
