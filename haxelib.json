@@ -7,5 +7,7 @@
     "releasenote": "First release",
     "contributors": ["DenkiYagi"],
     "classPath": "src",
-    "dependencies": {}
+    "dependencies": {
+        "extype": "2.0.0-rc.5"
+    }
 }
