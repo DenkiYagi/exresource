@@ -1,4 +1,4 @@
 -cp src
 -cp test
 --macro exresource.ExResource.load()
--lib extype:2.0.0-rc.5
+-lib extype

@@ -8,6 +8,6 @@
     "contributors": ["DenkiYagi"],
     "classPath": "src",
     "dependencies": {
-        "extype": "2.0.0-rc.5"
+        "extype": ""
     }
 }

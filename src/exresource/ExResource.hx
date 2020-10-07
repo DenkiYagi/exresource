@@ -1,7 +1,7 @@
 package exresource;
 
 #if macro
-import extype.Maybe;
+import extype.Nullable;
 import haxe.io.Eof;
 import haxe.io.Bytes;
 import haxe.macro.Context;
@@ -21,7 +21,7 @@ class ExResource {
 
     public static function load(path:String = ".resource"):Void {
         final scanner = new Scanner(path);
-        
+
         function skipWhiteSpace():Void {
             scanner.skipWhile(isWhiteSpace);
         }
@@ -30,14 +30,14 @@ class ExResource {
             scanner.skipWhile(isBlank);
         }
 
-        function readComment():Maybe<String> {
+        function readComment():Nullable<String> {
             return if (scanner.peekIf(char -> char == "#".code).nonEmpty()) {
                 final chars = scanner.peekWhile(char -> char != CR && char != LF);
                 scanner.skipIf(char -> char == CR);
                 scanner.skipIf(char -> char == LF);
                 toString(chars);
             } else {
-                Maybe.empty();
+                Nullable.empty();
             }
         }
 
@@ -45,7 +45,7 @@ class ExResource {
             final from = scanner.offset;
             final chars = scanner.peekWhile(char -> !isWhiteSpace(char) && char != EQUAL);
             final to = scanner.offset;
-            
+
             if (chars.length <= 0) {
                 return Context.error("Invalid key", Context.makePosition({file: path, min: from, max: to}));
             }
@@ -57,7 +57,7 @@ class ExResource {
             final from = scanner.offset;
             final char = scanner.peekIf(char -> char == EQUAL);
             final to = scanner.offset;
-            
+
             if (char.isEmpty()) {
                 Context.error("Invalid line", Context.makePosition({file: path, min: from, max: to}));
             }
@@ -86,7 +86,7 @@ class ExResource {
                                 if (buff.length > 0) buff.push(LF);
                             case LF:
                                 if (buff.length > 0) buff.push(LF);
-                            case _: 
+                            case _:
                                 buff.push(BACK_SLASH);
                                 buff.push(nc);
                         }
@@ -105,7 +105,7 @@ class ExResource {
         while (true) {
             skipWhiteSpace();
             if (scanner.isEnd()) break;
-            
+
             final comment = readComment();
             if (comment.nonEmpty()) {
                 continue;
@@ -116,7 +116,7 @@ class ExResource {
             existEqual();
             skipBlank();
             final value = readValue();
-    
+
             Context.addResource(key, Bytes.ofString(value));
         }
     }
@@ -146,7 +146,7 @@ class ExResource {
 private class Scanner {
     final input:String;
     final length:Int;
-    
+
     public var offset(default, null):Int;
 
     public function new(path:String) {
@@ -163,28 +163,28 @@ private class Scanner {
         return offset < length;
     }
 
-    public inline function peek():Maybe<Int> {
-        if (offset >= length) return Maybe.empty();
-		
+    public inline function peek():Nullable<Int> {
+        if (offset >= length) return Nullable.empty();
+
         #if utf16
-		final c = StringTools.utf16CodePointAt(input, offset++);
-		if (c >= StringTools.MIN_SURROGATE_CODE_POINT) {
-			offset++;
-		}
-		return c;
-		#else
-		return StringTools.fastCodeAt(input, offset++);
-		#end
+        final c = StringTools.utf16CodePointAt(input, offset++);
+        if (c >= StringTools.MIN_SURROGATE_CODE_POINT) {
+            offset++;
+        }
+        return c;
+        #else
+        return StringTools.fastCodeAt(input, offset++);
+        #end
     }
 
-    public inline function peekIf(fn:(char:Int) -> Bool):Maybe<Int> {
+    public inline function peekIf(fn:(char:Int) -> Bool):Nullable<Int> {
         final prev = offset;
         final char = peek();
         return if (char.nonEmpty() && fn(char.getUnsafe())) {
             char;
         } else {
             offset = prev;
-            Maybe.empty();
+            Nullable.empty();
         }
     }
 
